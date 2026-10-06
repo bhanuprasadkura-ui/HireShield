@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Jobs | HireShield</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+</head>
+
+<body data-role="CANDIDATE">
+
+<header>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Hire<span>Shield</span>
+        </div>
+
+        <div class="nav-links">
+
+            <a href="dashboard.html">Dashboard</a>
+            <a href="profile.html">Profile</a>
+            <a href="skills.html">Skills</a>
+            <a href="education.html">Education</a>
+            <a href="projects.html">Projects</a>
+            <a href="certifications.html">Certifications</a>
+            <a href="jobs.html">Jobs</a>
+            <a href="applications.html">Applications</a>
+            <a href="#" id="logoutBtn">Logout</a>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+<main class="education-page">
+
+    <section class="education-header">
+
+        <p class="section-tag">
+            CAREER OPPORTUNITIES
+        </p>
+
+        <h1>
+            Find Jobs
+        </h1>
+
+        <p>
+            Explore available jobs and check how your skills
+            match each opportunity.
+        </p>
+
+    </section>
+
+
+    <section class="education-card">
+
+        <div class="education-card-header">
+
+            <h2>
+                Available Jobs
+            </h2>
+
+            <span id="jobCount">
+                0 Jobs
+            </span>
+
+        </div>
+
+
+        <div id="jobList" class="education-list">
+
+            <p class="empty-education">
+                Loading jobs...
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script src="../js/api.js"></script>
+<script src="../js/role-guard.js"></script>
+<script src="../js/jobs.js"></script>
+
+</body>
+
+</html>

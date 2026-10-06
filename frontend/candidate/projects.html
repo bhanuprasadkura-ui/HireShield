@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Projects | HireShield</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+</head>
+
+
+<body data-role="CANDIDATE">
+
+<header>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Hire<span>Shield</span>
+        </div>
+
+        <div class="nav-links">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="profile.html">
+                Profile
+            </a>
+
+            <a href="skills.html">
+                Skills
+            </a>
+
+            <a href="education.html">
+                Education
+            </a>
+
+            <a href="projects.html">
+                Projects
+            </a>
+
+            <a href="jobs.html">
+                Jobs
+            </a>
+
+            <a href="applications.html">
+                Applications
+            </a>
+
+            <a href="#" id="logoutBtn">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+<main class="education-page">
+
+    <section class="education-header">
+
+        <p class="section-tag">
+            PROJECT PORTFOLIO
+        </p>
+
+        <h1>
+            My Projects
+        </h1>
+
+        <p>
+            Add your projects to showcase your practical skills.
+        </p>
+
+    </section>
+
+
+    <section class="education-card">
+
+        <div class="education-card-header">
+            <h2>
+                Add Project
+            </h2>
+        </div>
+
+
+        <form id="projectForm">
+
+            <div class="education-form-grid">
+
+                <div class="form-group">
+
+                    <label for="title">
+                        Project Title
+                    </label>
+
+                    <input
+                        type="text"
+                        id="title"
+                        placeholder="Example: HireShield"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="technologies">
+                        Technologies
+                    </label>
+
+                    <input
+                        type="text"
+                        id="technologies"
+                        placeholder="Java, Spring Boot, MySQL"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="projectUrl">
+                        Project URL
+                    </label>
+
+                    <input
+                        type="url"
+                        id="projectUrl"
+                        placeholder="https://example.com"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="githubUrl">
+                        GitHub URL
+                    </label>
+
+                    <input
+                        type="url"
+                        id="githubUrl"
+                        placeholder="https://github.com/..."
+                    >
+
+                </div>
+
+
+                <div
+                    class="form-group"
+                    style="grid-column: 1 / -1;"
+                >
+
+                    <label for="description">
+                        Description
+                    </label>
+
+                    <textarea
+                        id="description"
+                        rows="5"
+                        placeholder="Describe your project..."
+                        required
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="auth-btn education-add-btn"
+            >
+                Add Project
+            </button>
+
+
+            <p
+                id="projectMessage"
+                class="form-message"
+            ></p>
+
+        </form>
+
+    </section>
+
+
+    <section class="education-card">
+
+        <div class="education-card-header">
+
+            <h2>
+                My Projects
+            </h2>
+
+            <span id="projectCount">
+                0 Projects
+            </span>
+
+        </div>
+
+
+        <div
+            id="projectList"
+            class="education-list"
+        >
+
+            <p class="empty-education">
+                Loading projects...
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script src="../js/api.js"></script>
+<script src="../js/role-guard.js"></script>
+<script src="../js/projects.js"></script>
+
+</body>
+
+</html>

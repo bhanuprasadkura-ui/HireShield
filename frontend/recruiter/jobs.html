@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Manage Jobs | HireShield</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+</head>
+
+<body data-role="RECRUITER">
+
+<header>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Hire<span>Shield</span>
+        </div>
+
+        <div class="nav-links">
+
+            <a href="dashboard.html">Dashboard</a>
+            <a href="jobs.html">Jobs</a>
+            <a href="applicants.html">Applicants</a>
+            <a href="assessments.html">Assessments</a>
+            <a href="results.html">Results</a>
+            <a href="#" id="logoutBtn">Logout</a>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+<main class="education-page">
+
+    <section class="education-header">
+
+        <p class="section-tag">
+            JOB MANAGEMENT
+        </p>
+
+        <h1>
+            Manage Jobs
+        </h1>
+
+        <p>
+            Create job openings and define the skills
+            and eligibility required from candidates.
+        </p>
+
+    </section>
+
+
+    <!-- CREATE JOB -->
+
+    <section class="education-card">
+
+        <div class="education-card-header">
+            <h2>Create New Job</h2>
+        </div>
+
+        <form id="jobForm">
+
+            <div class="education-form-grid">
+
+                <div class="form-group">
+
+                    <label for="title">
+                        Job Title
+                    </label>
+
+                    <input
+                        type="text"
+                        id="title"
+                        placeholder="Example: Java Full Stack Developer"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="company">
+                        Company
+                    </label>
+
+                    <input
+                        type="text"
+                        id="company"
+                        placeholder="Example: HireShield Technologies"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="location">
+                        Location
+                    </label>
+
+                    <input
+                        type="text"
+                        id="location"
+                        placeholder="Example: Hyderabad"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="employmentType">
+                        Employment Type
+                    </label>
+
+                    <select id="employmentType">
+
+                        <option value="Full-Time">
+                            Full-Time
+                        </option>
+
+                        <option value="Part-Time">
+                            Part-Time
+                        </option>
+
+                        <option value="Internship">
+                            Internship
+                        </option>
+
+                        <option value="Contract">
+                            Contract
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div
+                    class="form-group"
+                    style="grid-column: 1 / -1;"
+                >
+
+                    <label for="description">
+                        Job Description
+                    </label>
+
+                    <textarea
+                        id="description"
+                        rows="5"
+                        placeholder="Describe the job responsibilities..."
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="requiredSkills">
+                        Required Skills
+                    </label>
+
+                    <input
+                        type="text"
+                        id="requiredSkills"
+                        placeholder="Java, Spring Boot, MySQL"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="preferredSkills">
+                        Preferred Skills
+                    </label>
+
+                    <input
+                        type="text"
+                        id="preferredSkills"
+                        placeholder="Docker, Git, React"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="eligibility">
+                        Eligibility
+                    </label>
+
+                    <input
+                        type="text"
+                        id="eligibility"
+                        placeholder="B.Tech in Computer Science"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="minimumExperience">
+                        Minimum Experience
+                    </label>
+
+                    <input
+                        type="number"
+                        id="minimumExperience"
+                        min="0"
+                        value="0"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="salaryRange">
+                        Salary Range
+                    </label>
+
+                    <input
+                        type="text"
+                        id="salaryRange"
+                        placeholder="Example: 7-12 LPA"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="auth-btn education-add-btn"
+            >
+                Create Job
+            </button>
+
+
+            <p
+                id="jobMessage"
+                class="form-message"
+            ></p>
+
+        </form>
+
+    </section>
+
+
+    <!-- MY JOBS -->
+
+    <section class="education-card">
+
+        <div class="education-card-header">
+
+            <h2>
+                My Jobs
+            </h2>
+
+            <span id="jobCount">
+                0 Jobs
+            </span>
+
+        </div>
+
+
+        <div
+            id="jobList"
+            class="education-list"
+        >
+
+            <p class="empty-education">
+                Loading jobs...
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script src="../js/api.js"></script>
+<script src="../js/role-guard.js"></script>
+<script src="../js/recruiter-jobs.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Assessment | HireShield</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+</head>
+
+<body data-role="CANDIDATE">
+
+<header>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Hire<span>Shield</span>
+        </div>
+
+        <div class="nav-links">
+
+            <a href="dashboard.html">Dashboard</a>
+            <a href="jobs.html">Jobs</a>
+            <a href="applications.html">Applications</a>
+            <a href="#" id="logoutBtn">Logout</a>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+<main class="education-page">
+
+    <section class="education-header">
+
+        <p class="section-tag">
+            SKILL ASSESSMENT
+        </p>
+
+        <h1 id="assessmentTitle">
+            Assessment
+        </h1>
+
+        <p id="assessmentDescription">
+            Loading assessment...
+        </p>
+
+        <div class="education-details">
+
+            <span
+                class="education-detail"
+                id="assessmentDuration">
+            </span>
+
+            <span
+                class="education-detail"
+                id="questionCount">
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <section class="education-card">
+
+        <div id="questionsContainer">
+
+            <p class="empty-education">
+                Loading questions...
+            </p>
+
+        </div>
+
+
+        <button
+            type="button"
+            id="submitAssessmentBtn"
+            class="auth-btn education-add-btn"
+            style="display: none;">
+            Submit Assessment
+        </button>
+
+
+        <p
+            id="assessmentMessage"
+            class="form-message">
+        </p>
+
+    </section>
+
+</main>
+
+
+<script src="../js/api.js"></script>
+<script src="../js/role-guard.js"></script>
+<script src="../js/assessment.js"></script>
+
+</body>
+
+</html>

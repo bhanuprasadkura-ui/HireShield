@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Education | HireShield</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+</head>
+
+
+<body data-role="CANDIDATE">
+
+    <!-- ================================
+         NAVBAR
+    ================================= -->
+
+    <header>
+
+        <nav class="navbar">
+
+            <div class="logo">
+                Hire<span>Shield</span>
+            </div>
+
+
+            <div class="nav-links">
+
+                <a href="dashboard.html">
+                    Dashboard
+                </a>
+
+                <a href="profile.html">
+                    Profile
+                </a>
+
+                <a href="skills.html">
+                    Skills
+                </a>
+
+                <a href="education.html">
+                    Education
+                </a>
+
+                <a href="jobs.html">
+                    Jobs
+                </a>
+
+                <a href="applications.html">
+                    Applications
+                </a>
+
+                <a href="#" id="logoutBtn">
+                    Logout
+                </a>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+
+
+    <!-- ================================
+         EDUCATION PAGE
+    ================================= -->
+
+    <main class="education-page">
+
+        <section class="education-header">
+
+            <p class="section-tag">
+                ACADEMIC BACKGROUND
+            </p>
+
+            <h1>
+                My Education
+            </h1>
+
+            <p>
+                Add your academic qualifications to
+                strengthen your candidate profile.
+            </p>
+
+        </section>
+
+
+
+        <!-- ================================
+             ADD EDUCATION
+        ================================= -->
+
+        <section class="education-card">
+
+            <div class="education-card-header">
+
+                <h2>
+                    Add Education
+                </h2>
+
+            </div>
+
+
+            <form id="educationForm">
+
+                <div class="education-form-grid">
+
+
+                    <div class="form-group">
+
+                        <label for="degree">
+                            Degree
+                        </label>
+
+                        <input
+                            type="text"
+                            id="degree"
+                            placeholder="Example: B.Tech"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="institution">
+                            Institution
+                        </label>
+
+                        <input
+                            type="text"
+                            id="institution"
+                            placeholder="Example: Anurag University"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="fieldOfStudy">
+                            Field of Study
+                        </label>
+
+                        <input
+                            type="text"
+                            id="fieldOfStudy"
+                            placeholder="Example: Computer Science"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="percentage">
+                            Percentage
+                        </label>
+
+                        <input
+                            type="number"
+                            id="percentage"
+                            step="0.01"
+                            placeholder="Example: 75.50"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="cgpa">
+                            CGPA
+                        </label>
+
+                        <input
+                            type="number"
+                            id="cgpa"
+                            step="0.01"
+                            placeholder="Example: 8.25"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="startDate">
+                            Start Date
+                        </label>
+
+                        <input
+                            type="date"
+                            id="startDate"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="endDate">
+                            End Date
+                        </label>
+
+                        <input
+                            type="date"
+                            id="endDate"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="auth-btn education-add-btn"
+                >
+                    Add Education
+                </button>
+
+
+                <p
+                    id="educationMessage"
+                    class="form-message"
+                ></p>
+
+            </form>
+
+        </section>
+
+
+
+        <!-- ================================
+             EDUCATION LIST
+    ================================= -->
+
+        <section class="education-card">
+
+            <div class="education-card-header">
+
+                <h2>
+                    My Education
+                </h2>
+
+                <span id="educationCount">
+                    0 Entries
+                </span>
+
+            </div>
+
+
+            <div
+                id="educationList"
+                class="education-list"
+            >
+
+                <p class="empty-education">
+                    Loading education...
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- ================================
+         JAVASCRIPT
+    ================================= -->
+
+    <script src="../js/api.js"></script>
+
+    <script src="../js/role-guard.js"></script>
+
+    <script src="../js/education.js"></script>
+
+</body>
+
+</html>

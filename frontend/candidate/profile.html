@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>My Profile | HireShield</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+</head>
+
+
+<body data-role="CANDIDATE">
+
+    <!-- ================================
+         NAVBAR
+    ================================= -->
+
+    <header>
+
+        <nav class="navbar">
+
+            <div class="logo">
+                Hire<span>Shield</span>
+            </div>
+
+
+            <div class="nav-links">
+
+                <a href="dashboard.html">
+                    Dashboard
+                </a>
+
+                <a href="profile.html">
+                    Profile
+                </a>
+
+                <a href="jobs.html">
+                    Jobs
+                </a>
+
+                <a href="applications.html">
+                    Applications
+                </a>
+
+                <a href="#" id="logoutBtn">
+                    Logout
+                </a>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+
+
+    <!-- ================================
+         PROFILE PAGE
+    ================================= -->
+
+    <main class="profile-page">
+
+        <section class="profile-header">
+
+            <p class="section-tag">
+                CANDIDATE PROFILE
+            </p>
+
+            <h1>
+                My Profile
+            </h1>
+
+            <p>
+                Build your professional profile to improve
+                your job matching and recruitment opportunities.
+            </p>
+
+        </section>
+
+
+
+        <!-- ================================
+             BASIC PROFILE
+        ================================= -->
+
+        <section class="profile-card">
+
+            <div class="profile-card-header">
+
+                <h2>
+                    Basic Information
+                </h2>
+
+                <span id="profileStatus">
+                    Loading...
+                </span>
+
+            </div>
+
+
+            <form id="profileForm">
+
+                <div class="profile-form-grid">
+
+                    <div class="form-group">
+
+                        <label for="fullName">
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="fullName"
+                            placeholder="Enter your full name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="phone">
+                            Phone
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="phone"
+                            placeholder="Enter your phone number"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="location">
+                            Location
+                        </label>
+
+                        <input
+                            type="text"
+                            id="location"
+                            placeholder="Example: Hyderabad"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="githubUrl">
+                            GitHub URL
+                        </label>
+
+                        <input
+                            type="url"
+                            id="githubUrl"
+                            placeholder="https://github.com/username"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="linkedinUrl">
+                            LinkedIn URL
+                        </label>
+
+                        <input
+                            type="url"
+                            id="linkedinUrl"
+                            placeholder="https://linkedin.com/in/username"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="resumeUrl">
+                            Resume URL
+                        </label>
+
+                        <input
+                            type="url"
+                            id="resumeUrl"
+                            placeholder="Resume link"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="bio">
+                        Professional Summary
+                    </label>
+
+                    <textarea
+                        id="bio"
+                        rows="5"
+                        placeholder="Write a short professional summary..."
+                    ></textarea>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="auth-btn profile-save-btn"
+                >
+                    Save Profile
+                </button>
+
+
+                <p
+                    id="profileMessage"
+                    class="form-message"
+                ></p>
+
+            </form>
+
+        </section>
+
+
+
+        <!-- ================================
+             PROFILE SECTIONS
+        ================================= -->
+
+        <section class="profile-section-grid">
+
+
+            <div class="profile-option-card">
+
+                <div class="dashboard-card-icon">
+                    💻
+                </div>
+
+                <h2>
+                    Technical Skills
+                </h2>
+
+                <p>
+                    Add your programming languages,
+                    frameworks and technical skills.
+                </p>
+
+                <a
+                    href="skills.html"
+                    class="dashboard-btn"
+                >
+                    Manage Skills
+                </a>
+
+            </div>
+
+
+
+            <div class="profile-option-card">
+
+                <div class="dashboard-card-icon">
+                    🎓
+                </div>
+
+                <h2>
+                    Education
+                </h2>
+
+                <p>
+                    Add your degree, institution,
+                    CGPA and academic details.
+                </p>
+
+                <a
+                    href="education.html"
+                    class="dashboard-btn"
+                >
+                    Add Education
+                </a>
+
+            </div>
+
+
+
+            <div class="profile-option-card">
+
+                <div class="dashboard-card-icon">
+                    🚀
+                </div>
+
+                <h2>
+                    Projects
+                </h2>
+
+                <p>
+                    Showcase your projects,
+                    technologies and GitHub links.
+                </p>
+
+                <a
+                    href="projects.html"
+                    class="dashboard-btn"
+                >
+                    Add Projects
+                </a>
+
+            </div>
+
+
+
+            <div class="profile-option-card">
+
+                <div class="dashboard-card-icon">
+                    🏆
+                </div>
+
+                <h2>
+                    Certifications
+                </h2>
+
+                <p>
+                    Add certifications and
+                    professional credentials.
+                </p>
+
+                <a
+                    href="certifications.html"
+                    class="dashboard-btn"
+                >
+                    Add Certifications
+                </a>
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+
+
+    <!-- ================================
+         JAVASCRIPT
+    ================================= -->
+
+    <script src="../js/api.js"></script>
+
+    <script src="../js/role-guard.js"></script>
+
+    <!-- THIS WAS MISSING -->
+    <script src="../js/profile.js"></script>
+
+
+</body>
+
+</html>

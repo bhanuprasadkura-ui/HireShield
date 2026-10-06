@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Assessments | HireShield</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+</head>
+
+<body data-role="RECRUITER">
+
+<header>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Hire<span>Shield</span>
+        </div>
+
+        <div class="nav-links">
+
+            <a href="dashboard.html">Dashboard</a>
+            <a href="jobs.html">Jobs</a>
+            <a href="applicants.html">Applicants</a>
+            <a href="assessments.html">Assessments</a>
+            <a href="results.html">Results</a>
+            <a href="#" id="logoutBtn">Logout</a>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+<main class="education-page">
+
+    <section class="education-header">
+
+        <p class="section-tag">
+            TECHNICAL ASSESSMENTS
+        </p>
+
+        <h1>
+            Manage Assessments
+        </h1>
+
+        <p>
+            Create assessments and add questions for candidates.
+        </p>
+
+    </section>
+
+
+    <!-- CREATE ASSESSMENT -->
+
+    <section class="education-card">
+
+        <div class="education-card-header">
+            <h2>Create Assessment</h2>
+        </div>
+
+        <form id="assessmentForm">
+
+            <div class="education-form-grid">
+
+                <div class="form-group">
+
+                    <label for="title">
+                        Assessment Title
+                    </label>
+
+                    <input
+                        type="text"
+                        id="title"
+                        placeholder="Example: Java Backend Assessment"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="duration">
+                        Duration
+                    </label>
+
+                    <input
+                        type="text"
+                        id="duration"
+                        placeholder="Example: 30 minutes"
+                        required
+                    >
+
+                </div>
+
+
+                <div
+                    class="form-group"
+                    style="grid-column: 1 / -1;"
+                >
+
+                    <label for="description">
+                        Description
+                    </label>
+
+                    <textarea
+                        id="description"
+                        rows="4"
+                        placeholder="Describe the assessment..."
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="totalQuestions">
+                        Total Questions
+                    </label>
+
+                    <input
+                        type="number"
+                        id="totalQuestions"
+                        min="1"
+                        value="5"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="auth-btn education-add-btn"
+            >
+                Create Assessment
+            </button>
+
+
+            <p
+                id="assessmentMessage"
+                class="form-message"
+            ></p>
+
+        </form>
+
+    </section>
+
+
+    <!-- MY ASSESSMENTS -->
+
+    <section class="education-card">
+
+        <div class="education-card-header">
+
+            <h2>
+                My Assessments
+            </h2>
+
+            <span id="assessmentCount">
+                0 Assessments
+            </span>
+
+        </div>
+
+
+        <div
+            id="assessmentList"
+            class="education-list"
+        >
+
+            <p class="empty-education">
+                Loading assessments...
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script src="../js/api.js"></script>
+<script src="../js/role-guard.js"></script>
+<script src="../js/recruiter-assessments.js"></script>
+
+</body>
+
+</html>

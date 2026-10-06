@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Recruiter Dashboard | HireShield</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+</head>
+
+<body data-role="RECRUITER">
+
+<header>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Hire<span>Shield</span>
+        </div>
+
+        <div class="nav-links">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="jobs.html">
+                Jobs
+            </a>
+
+            <a href="applicants.html">
+                Applicants
+            </a>
+
+            <a href="assessments.html">
+                Assessments
+            </a>
+
+            <a href="results.html">
+                Results
+            </a>
+
+            <a href="#" id="logoutBtn">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+<main class="dashboard-page">
+
+    <section class="dashboard-header">
+
+        <div>
+
+            <p class="section-tag">
+                RECRUITER DASHBOARD
+            </p>
+
+            <h1>
+                Welcome to HireShield
+            </h1>
+
+            <p>
+                Create jobs, review candidates, manage assessments
+                and track recruitment progress.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="dashboard-grid">
+
+
+        <!-- Jobs -->
+
+        <div class="dashboard-card">
+
+            <div class="dashboard-card-icon">
+                💼
+            </div>
+
+            <h2>
+                Manage Jobs
+            </h2>
+
+            <p>
+                Create job openings and define required
+                and preferred skills.
+            </p>
+
+            <a
+                href="jobs.html"
+                class="dashboard-btn"
+            >
+                Manage Jobs
+            </a>
+
+        </div>
+
+
+        <!-- Applicants -->
+
+        <div class="dashboard-card">
+
+            <div class="dashboard-card-icon">
+                👥
+            </div>
+
+            <h2>
+                Applicants
+            </h2>
+
+            <p>
+                Review candidates who have applied
+                to your job openings.
+            </p>
+
+            <a
+                href="applicants.html"
+                class="dashboard-btn"
+            >
+                View Applicants
+            </a>
+
+        </div>
+
+
+        <!-- Assessments -->
+
+        <div class="dashboard-card">
+
+            <div class="dashboard-card-icon">
+                📝
+            </div>
+
+            <h2>
+                Assessments
+            </h2>
+
+            <p>
+                Create technical assessments and
+                manage assessment questions.
+            </p>
+
+            <a
+                href="assessments.html"
+                class="dashboard-btn"
+            >
+                Manage Assessments
+            </a>
+
+        </div>
+
+
+        <!-- Results -->
+
+        <div class="dashboard-card">
+
+            <div class="dashboard-card-icon">
+                📊
+            </div>
+
+            <h2>
+                Assessment Results
+            </h2>
+
+            <p>
+                Review candidate assessment scores
+                and performance.
+            </p>
+
+            <a
+                href="results.html"
+                class="dashboard-btn"
+            >
+                View Results
+            </a>
+
+        </div>
+
+
+        <!-- Candidate Matching -->
+
+        <div class="dashboard-card">
+
+            <div class="dashboard-card-icon">
+                🎯
+            </div>
+
+            <h2>
+                Candidate Matching
+            </h2>
+
+            <p>
+                Compare candidate skills with your
+                job requirements.
+            </p>
+
+            <a
+                href="applicants.html"
+                class="dashboard-btn"
+            >
+                Review Matches
+            </a>
+
+        </div>
+
+
+        <!-- Recruitment -->
+
+        <div class="dashboard-card">
+
+            <div class="dashboard-card-icon">
+                📈
+            </div>
+
+            <h2>
+                Recruitment Tracking
+            </h2>
+
+            <p>
+                Track applications from applied
+                through selection.
+            </p>
+
+            <a
+                href="applicants.html"
+                class="dashboard-btn"
+            >
+                Track Candidates
+            </a>
+
+        </div>
+
+
+    </section>
+
+</main>
+
+
+<script src="../js/api.js"></script>
+<script src="../js/role-guard.js"></script>
+
+<script>
+
+    document
+        .getElementById("logoutBtn")
+        .addEventListener("click", function (event) {
+
+            event.preventDefault();
+
+            removeToken();
+
+            localStorage.removeItem(
+                "hireshield_role"
+            );
+
+            localStorage.removeItem(
+                "hireshield_user"
+            );
+
+            window.location.href =
+                "../login.html";
+
+        });
+
+</script>
+
+</body>
+
+</html>

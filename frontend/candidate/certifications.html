@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Certifications | HireShield</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+</head>
+
+
+<body data-role="CANDIDATE">
+
+<header>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Hire<span>Shield</span>
+        </div>
+
+        <div class="nav-links">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="profile.html">
+                Profile
+            </a>
+
+            <a href="skills.html">
+                Skills
+            </a>
+
+            <a href="education.html">
+                Education
+            </a>
+
+            <a href="projects.html">
+                Projects
+            </a>
+
+            <a href="certifications.html">
+                Certifications
+            </a>
+
+            <a href="jobs.html">
+                Jobs
+            </a>
+
+            <a href="applications.html">
+                Applications
+            </a>
+
+            <a href="#" id="logoutBtn">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+<main class="education-page">
+
+    <section class="education-header">
+
+        <p class="section-tag">
+            PROFESSIONAL CREDENTIALS
+        </p>
+
+        <h1>
+            My Certifications
+        </h1>
+
+        <p>
+            Add your professional certifications and credentials.
+        </p>
+
+    </section>
+
+
+    <section class="education-card">
+
+        <div class="education-card-header">
+
+            <h2>
+                Add Certification
+            </h2>
+
+        </div>
+
+
+        <form id="certificationForm">
+
+            <div class="education-form-grid">
+
+
+                <div class="form-group">
+
+                    <label for="name">
+                        Certification Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        placeholder="Example: Java Programming"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="issuingOrganization">
+                        Issuing Organization
+                    </label>
+
+                    <input
+                        type="text"
+                        id="issuingOrganization"
+                        placeholder="Example: Oracle"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="issueDate">
+                        Issue Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="issueDate"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="credentialId">
+                        Credential ID
+                    </label>
+
+                    <input
+                        type="text"
+                        id="credentialId"
+                        placeholder="Example: ABC12345"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="credentialUrl">
+                        Credential URL
+                    </label>
+
+                    <input
+                        type="url"
+                        id="credentialUrl"
+                        placeholder="https://example.com/certificate"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="auth-btn education-add-btn"
+            >
+                Add Certification
+            </button>
+
+
+            <p
+                id="certificationMessage"
+                class="form-message"
+            ></p>
+
+        </form>
+
+    </section>
+
+
+    <section class="education-card">
+
+        <div class="education-card-header">
+
+            <h2>
+                My Certifications
+            </h2>
+
+            <span id="certificationCount">
+                0 Certifications
+            </span>
+
+        </div>
+
+
+        <div
+            id="certificationList"
+            class="education-list"
+        >
+
+            <p class="empty-education">
+                Loading certifications...
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script src="../js/api.js"></script>
+<script src="../js/role-guard.js"></script>
+<script src="../js/certifications.js"></script>
+
+</body>
+
+</html>

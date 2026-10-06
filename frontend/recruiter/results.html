@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Assessment Results | HireShield</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+</head>
+
+<body data-role="RECRUITER">
+
+<header>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Hire<span>Shield</span>
+        </div>
+
+        <div class="nav-links">
+
+            <a href="dashboard.html">Dashboard</a>
+            <a href="jobs.html">Jobs</a>
+            <a href="applicants.html">Applicants</a>
+            <a href="assessments.html">Assessments</a>
+            <a href="results.html">Results</a>
+            <a href="#" id="logoutBtn">Logout</a>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+<main class="education-page">
+
+    <section class="education-header">
+
+        <p class="section-tag">
+            ASSESSMENT PERFORMANCE
+        </p>
+
+        <h1>
+            Assessment Results
+        </h1>
+
+        <p>
+            Review candidate assessment scores and performance.
+        </p>
+
+    </section>
+
+
+    <!-- ASSESSMENT SELECTOR -->
+
+    <section class="education-card">
+
+        <div class="education-card-header">
+            <h2>Select Assessment</h2>
+        </div>
+
+        <div class="form-group">
+
+            <label for="assessmentSelect">
+                Assessment
+            </label>
+
+            <select id="assessmentSelect">
+
+                <option value="">
+                    Select an assessment
+                </option>
+
+            </select>
+
+        </div>
+
+    </section>
+
+
+    <!-- RESULTS -->
+
+    <section class="education-card">
+
+        <div class="education-card-header">
+
+            <h2>
+                Candidate Results
+            </h2>
+
+            <span id="resultCount">
+                0 Results
+            </span>
+
+        </div>
+
+
+        <div
+            id="resultList"
+            class="education-list"
+        >
+
+            <p class="empty-education">
+                Select an assessment to view results.
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script src="../js/api.js"></script>
+<script src="../js/role-guard.js"></script>
+<script src="../js/results.js"></script>
+
+</body>
+
+</html>

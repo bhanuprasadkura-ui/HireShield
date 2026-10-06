@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Candidate Dashboard | HireShield</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+</head>
+
+
+<body data-role="CANDIDATE">
+
+    <!-- ================================
+         NAVBAR
+    ================================= -->
+
+    <header>
+
+        <nav class="navbar">
+
+            <div class="logo">
+                Hire<span>Shield</span>
+            </div>
+
+
+            <div class="nav-links">
+
+                <a href="dashboard.html">
+                    Dashboard
+                </a>
+
+                <a href="profile.html">
+                    Profile
+                </a>
+
+                <a href="skills.html">
+                    Skills
+                </a>
+
+                <a href="education.html">
+                    Education
+                </a>
+
+                <a href="projects.html">
+                    Projects
+                </a>
+
+                <a href="certifications.html">
+                    Certifications
+                </a>
+
+                <a href="jobs.html">
+                    Jobs
+                </a>
+
+                <a href="applications.html">
+                    Applications
+                </a>
+
+                <a href="#" id="logoutBtn">
+                    Logout
+                </a>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+
+
+    <!-- ================================
+         DASHBOARD
+    ================================= -->
+
+    <main class="dashboard-page">
+
+        <section class="dashboard-header">
+
+            <div>
+
+                <p class="section-tag">
+                    CANDIDATE DASHBOARD
+                </p>
+
+                <h1>
+                    Welcome to HireShield
+                </h1>
+
+                <p>
+                    Manage your profile, discover jobs,
+                    track applications and complete assessments.
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ================================
+             DASHBOARD CARDS
+        ================================= -->
+
+        <section class="dashboard-grid">
+
+
+            <!-- Profile -->
+
+            <div class="dashboard-card">
+
+                <div class="dashboard-card-icon">
+                    👤
+                </div>
+
+                <h2>
+                    My Profile
+                </h2>
+
+                <p>
+                    Manage your personal information,
+                    education, skills, projects and certifications.
+                </p>
+
+                <a
+                    href="profile.html"
+                    class="dashboard-btn"
+                >
+                    View Profile
+                </a>
+
+            </div>
+
+
+
+            <!-- Jobs -->
+
+            <div class="dashboard-card">
+
+                <div class="dashboard-card-icon">
+                    💼
+                </div>
+
+                <h2>
+                    Find Jobs
+                </h2>
+
+                <p>
+                    Explore available job opportunities
+                    and check your skill match.
+                </p>
+
+                <a
+                    href="jobs.html"
+                    class="dashboard-btn"
+                >
+                    Browse Jobs
+                </a>
+
+            </div>
+
+
+
+            <!-- Applications -->
+
+            <div class="dashboard-card">
+
+                <div class="dashboard-card-icon">
+                    📄
+                </div>
+
+                <h2>
+                    My Applications
+                </h2>
+
+                <p>
+                    Track your applications and monitor
+                    your recruitment progress.
+                </p>
+
+                <a
+                    href="applications.html"
+                    class="dashboard-btn"
+                >
+                    View Applications
+                </a>
+
+            </div>
+
+
+
+            <!-- Assessments -->
+
+            <div class="dashboard-card">
+
+                <div class="dashboard-card-icon">
+                    📝
+                </div>
+
+                <h2>
+                    Assessments
+                </h2>
+
+                <p>
+                    Complete recruiter-assigned assessments
+                    and view your results.
+                </p>
+
+                <a
+                    href="applications.html"
+                    class="dashboard-btn"
+                >
+                    View Assessments
+                </a>
+
+            </div>
+
+
+
+            <!-- Skill Gap -->
+
+            <div class="dashboard-card">
+
+                <div class="dashboard-card-icon">
+                    🎯
+                </div>
+
+                <h2>
+                    Skill Gap
+                </h2>
+
+                <p>
+                    Identify missing skills and understand
+                    what you need to improve for a job.
+                </p>
+
+                <a
+                    href="jobs.html"
+                    class="dashboard-btn"
+                >
+                    Explore Skills
+                </a>
+
+            </div>
+
+
+
+            <!-- Career -->
+
+            <div class="dashboard-card">
+
+                <div class="dashboard-card-icon">
+                    📊
+                </div>
+
+                <h2>
+                    Career Insights
+                </h2>
+
+                <p>
+                    Understand your job matches,
+                    assessment performance and recruitment journey.
+                </p>
+
+                <a
+                    href="applications.html"
+                    class="dashboard-btn"
+                >
+                    View Progress
+                </a>
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+
+
+    <!-- ================================
+         JAVASCRIPT
+    ================================= -->
+
+    <script src="../js/api.js"></script>
+    <script src="../js/role-guard.js"></script>
+
+    <script>
+
+        document
+            .getElementById("logoutBtn")
+            .addEventListener("click", function (event) {
+
+                event.preventDefault();
+
+                removeToken();
+
+                localStorage.removeItem(
+                    "hireshield_role"
+                );
+
+                localStorage.removeItem(
+                    "hireshield_user"
+                );
+
+                window.location.href =
+                    "../login.html";
+
+            });
+
+    </script>
+
+</body>
+
+</html>
