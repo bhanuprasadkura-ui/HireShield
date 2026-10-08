@@ -1,99 +1,104 @@
-const registerForm =
-    document.getElementById("registerForm");
+const registerForm = document.getElementById("registerForm");
+const registerMessage = document.getElementById("registerMessage");
 
-const registerMessage =
-    document.getElementById("registerMessage");
+const REGISTER_API_URL =
+    "http://localhost:8080/api/users/register";
 
+registerForm.addEventListener("submit", async function (event) {
 
-registerForm.addEventListener(
-    "submit",
-    async function (event) {
+    event.preventDefault();
 
-        event.preventDefault();
+    const name =
+        document.getElementById("name").value.trim();
 
+    const email =
+        document.getElementById("email").value.trim();
 
-        const name =
-            document.getElementById("name").value.trim();
+    const password =
+        document.getElementById("password").value;
 
-        const email =
-            document.getElementById("email").value.trim();
+    const role =
+        document.getElementById("role").value;
 
-        const password =
-            document.getElementById("password").value;
+    registerMessage.textContent =
+        "Creating your account...";
 
-        const role =
-            document.getElementById("role").value;
+    registerMessage.style.color = "";
 
+    try {
+
+        const response = await fetch(
+            REGISTER_API_URL,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    password: password,
+                    role: role
+                })
+            }
+        );
+
+        const responseText =
+            await response.text();
+
+        let data = {};
+
+        if (responseText.trim() !== "") {
+
+            try {
+
+                data = JSON.parse(responseText);
+
+            } catch (jsonError) {
+
+                data = {};
+            }
+        }
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                responseText ||
+                `Registration failed. Server returned ${response.status}.`
+            );
+        }
 
         registerMessage.textContent =
-            "Creating your account...";
+            "Account created successfully!";
 
+        registerMessage.style.color =
+            "#16a34a";
 
-        try {
+        registerForm.reset();
 
-            const response = await fetch(
-                `${API_BASE_URL}/users/register`,
-                {
-                    method: "POST",
+        setTimeout(function () {
 
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+            window.location.href =
+                "login.html";
 
-                    body: JSON.stringify({
-                        name: name,
-                        email: email,
-                        password: password,
-                        role: role
-                    })
-                }
-            );
+        }, 1500);
 
+    } catch (error) {
 
-            const data =
-                await response.json();
+        console.error(
+            "Registration error:",
+            error
+        );
 
+        registerMessage.textContent =
+            error.message ||
+            "Registration failed.";
 
-            if (!response.ok) {
-
-                throw new Error(
-                    data.message ||
-                    "Registration failed."
-                );
-
-            }
-
-
-            registerMessage.textContent =
-                "Account created successfully!";
-
-
-            registerMessage.style.color =
-                "#16a34a";
-
-
-            registerForm.reset();
-
-
-            setTimeout(function () {
-
-                window.location.href =
-                    "login.html";
-
-            }, 1500);
-
-        }
-
-
-        catch (error) {
-
-            registerMessage.textContent =
-                error.message;
-
-            registerMessage.style.color =
-                "#dc2626";
-
-        }
-
+        registerMessage.style.color =
+            "#dc2626";
     }
-);
+
+});

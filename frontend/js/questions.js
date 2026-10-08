@@ -1,13 +1,23 @@
 (function () {
 
     // =========================================================
+    // API
+    // =========================================================
+
+    const QUESTIONS_API_URL =
+        "http://localhost:8080/api";
+
+
+    // =========================================================
     // AUTH
     // =========================================================
 
     const authToken = getToken();
 
     if (!authToken) {
+
         window.location.href = "../login.html";
+
         return;
     }
 
@@ -62,6 +72,7 @@
 
         loadAssessment();
         loadQuestions();
+
     }
 
 
@@ -75,7 +86,7 @@
 
             const response =
                 await fetch(
-                    `${API_BASE_URL}/assessments/${assessmentId}`,
+                    `${QUESTIONS_API_URL}/assessments/${assessmentId}`,
                     {
                         method: "GET",
 
@@ -114,6 +125,7 @@
                 document.getElementById(
                     "assessmentTitle"
                 );
+
 
             const assessmentDescription =
                 document.getElementById(
@@ -155,6 +167,7 @@
                 error
             );
         }
+
     }
 
 
@@ -185,7 +198,7 @@
 
             const response =
                 await fetch(
-                    `${API_BASE_URL}/assessments/${assessmentId}/questions`,
+                    `${QUESTIONS_API_URL}/assessments/${assessmentId}/questions`,
                     {
                         method: "GET",
 
@@ -219,14 +232,16 @@
                 const errorText =
                     await response.text();
 
+
                 console.error(
                     "Load questions failed:",
                     response.status,
                     errorText
                 );
 
+
                 throw new Error(
-                    "Could not load questions."
+                    `Could not load questions. Server returned ${response.status}.`
                 );
             }
 
@@ -258,6 +273,7 @@
                 </p>
             `;
         }
+
     }
 
 
@@ -274,11 +290,13 @@
                 questions
             );
 
+
             questionList.innerHTML = `
                 <p class="empty-education">
                     Invalid question data received.
                 </p>
             `;
+
 
             return;
         }
@@ -310,6 +328,7 @@
                 </p>
             `;
 
+
             return;
         }
 
@@ -323,6 +342,7 @@
 
                 const item =
                     document.createElement("div");
+
 
                 item.className =
                     "education-item";
@@ -338,6 +358,7 @@
                                 question.questionText
                             )}
                         </h3>
+
 
                         <button
                             type="button"
@@ -382,6 +403,7 @@
 
 
                     <p>
+
                         <strong>
                             Correct Answer:
                         </strong>
@@ -389,12 +411,14 @@
                         ${escapeHtml(
                             question.correctAnswer
                         )}
+
                     </p>
 
                 `;
 
 
                 questionList.appendChild(item);
+
             }
         );
 
@@ -419,11 +443,15 @@
                         const questionId =
                             this.dataset.questionId;
 
+
                         deleteQuestion(questionId);
+
                     }
                 );
+
             }
         );
+
     }
 
 
@@ -510,6 +538,7 @@
                                 "correctAnswer"
                             )
                             ?.value || ""
+
                 };
 
 
@@ -531,6 +560,7 @@
                         true
                     );
 
+
                     return;
                 }
 
@@ -545,7 +575,7 @@
 
                     const response =
                         await fetch(
-                            `${API_BASE_URL}/assessments/${assessmentId}/questions`,
+                            `${QUESTIONS_API_URL}/assessments/${assessmentId}/questions`,
                             {
                                 method: "POST",
 
@@ -556,6 +586,7 @@
 
                                     "Authorization":
                                         `Bearer ${authToken}`
+
                                 },
 
                                 body:
@@ -582,6 +613,7 @@
 
                     let data = {};
 
+
                     if (responseText) {
 
                         try {
@@ -598,6 +630,7 @@
                                 responseText
                             );
                         }
+
                     }
 
 
@@ -610,8 +643,9 @@
                         throw new Error(
                             data.message ||
                             responseText ||
-                            "Could not add question."
+                            `Could not add question. Server returned ${response.status}.`
                         );
+
                     }
 
 
@@ -632,7 +666,6 @@
 
                     await loadQuestions();
 
-
                 } catch (error) {
 
                     console.error(
@@ -646,8 +679,10 @@
                         true
                     );
                 }
+
             }
         );
+
     }
 
 
@@ -671,7 +706,7 @@
 
             const response =
                 await fetch(
-                    `${API_BASE_URL}/assessments/${assessmentId}/questions/${questionId}`,
+                    `${QUESTIONS_API_URL}/assessments/${assessmentId}/questions/${questionId}`,
                     {
                         method: "DELETE",
 
@@ -699,14 +734,16 @@
                 const errorText =
                     await response.text();
 
+
                 console.error(
                     "Delete question failed:",
                     response.status,
                     errorText
                 );
 
+
                 throw new Error(
-                    "Could not delete question."
+                    `Could not delete question. Server returned ${response.status}.`
                 );
             }
 
@@ -733,6 +770,7 @@
                 true
             );
         }
+
     }
 
 
@@ -746,6 +784,7 @@
     ) {
 
         if (!questionMessage) {
+
             return;
         }
 
@@ -758,6 +797,7 @@
             isError
                 ? "#dc2626"
                 : "#16a34a";
+
     }
 
 
@@ -770,12 +810,15 @@
         const div =
             document.createElement("div");
 
+
         div.textContent =
             value == null
                 ? ""
                 : String(value);
 
+
         return div.innerHTML;
+
     }
 
 
@@ -807,8 +850,10 @@
 
                 window.location.href =
                     "../login.html";
+
             }
         );
+
     }
 
 })();

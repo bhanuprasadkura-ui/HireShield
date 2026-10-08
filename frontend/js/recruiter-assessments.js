@@ -10,9 +10,10 @@ const assessmentList =
 const assessmentCount =
     document.getElementById("assessmentCount");
 
+const ASSESSMENT_API_URL =
+    "http://localhost:8080/api/assessments";
 
 const authToken = getToken();
-
 
 if (!authToken) {
 
@@ -29,7 +30,7 @@ async function loadAssessments() {
     try {
 
         const response = await fetch(
-            `${API_BASE_URL}/assessments/my-assessments`,
+            `${ASSESSMENT_API_URL}/my-assessments`,
             {
                 method: "GET",
 
@@ -40,25 +41,31 @@ async function loadAssessments() {
             }
         );
 
-
         if (!response.ok) {
 
+            const responseText =
+                await response.text();
+
             throw new Error(
-                "Could not load assessments."
+                responseText ||
+                `Could not load assessments. Server returned ${response.status}.`
             );
 
         }
 
-
         const assessments =
             await response.json();
-
 
         displayAssessments(assessments);
 
     }
 
     catch (error) {
+
+        console.error(
+            "Load assessments error:",
+            error
+        );
 
         assessmentList.innerHTML =
             `<p class="empty-education">
@@ -76,14 +83,12 @@ function displayAssessments(assessments) {
 
     assessmentList.innerHTML = "";
 
-
     assessmentCount.textContent =
         `${assessments.length} ${
             assessments.length === 1
                 ? "Assessment"
                 : "Assessments"
         }`;
-
 
     if (assessments.length === 0) {
 
@@ -96,16 +101,13 @@ function displayAssessments(assessments) {
 
     }
 
-
     assessments.forEach(function (assessment) {
 
         const item =
             document.createElement("div");
 
-
         item.className =
             "education-item";
-
 
         item.innerHTML = `
 
@@ -123,7 +125,6 @@ function displayAssessments(assessments) {
 
                 </div>
 
-
                 <button
                     class="delete-assessment-btn"
                     onclick="deleteAssessment(${assessment.id})">
@@ -132,20 +133,17 @@ function displayAssessments(assessments) {
 
             </div>
 
-
             <div class="education-details">
 
                 <span class="education-detail">
                     Duration: ${assessment.duration}
                 </span>
 
-
                 <span class="education-detail">
                     Questions: ${assessment.totalQuestions}
                 </span>
 
             </div>
-
 
             <div class="education-details">
 
@@ -158,7 +156,6 @@ function displayAssessments(assessments) {
             </div>
 
         `;
-
 
         assessmentList.appendChild(item);
 
@@ -175,10 +172,10 @@ assessmentForm.addEventListener(
 
         event.preventDefault();
 
-
         assessmentMessage.textContent =
             "Creating assessment...";
 
+        assessmentMessage.style.color = "";
 
         const assessmentData = {
 
@@ -209,11 +206,10 @@ assessmentForm.addEventListener(
 
         };
 
-
         try {
 
             const response = await fetch(
-                `${API_BASE_URL}/assessments`,
+                ASSESSMENT_API_URL,
                 {
                     method: "POST",
 
@@ -235,36 +231,46 @@ assessmentForm.addEventListener(
                 }
             );
 
+            const responseText =
+                await response.text();
 
-            const data =
-                await response.json();
+            let data = {};
 
+            if (responseText.trim() !== "") {
+
+                try {
+
+                    data =
+                        JSON.parse(responseText);
+
+                } catch (jsonError) {
+
+                    data = {};
+                }
+
+            }
 
             if (!response.ok) {
 
                 throw new Error(
                     data.message ||
-                    "Could not create assessment."
+                    responseText ||
+                    `Could not create assessment. Server returned ${response.status}.`
                 );
 
             }
 
-
             assessmentMessage.textContent =
                 "Assessment created successfully!";
-
 
             assessmentMessage.style.color =
                 "#16a34a";
 
-
             assessmentForm.reset();
-
 
             document
                 .getElementById("totalQuestions")
                 .value = 5;
-
 
             await loadAssessments();
 
@@ -272,9 +278,14 @@ assessmentForm.addEventListener(
 
         catch (error) {
 
-            assessmentMessage.textContent =
-                error.message;
+            console.error(
+                "Create assessment error:",
+                error
+            );
 
+            assessmentMessage.textContent =
+                error.message ||
+                "Could not create assessment.";
 
             assessmentMessage.style.color =
                 "#dc2626";
@@ -301,11 +312,10 @@ async function deleteAssessment(
 
     }
 
-
     try {
 
         const response = await fetch(
-            `${API_BASE_URL}/assessments/${assessmentId}`,
+            `${ASSESSMENT_API_URL}/${assessmentId}`,
             {
                 method: "DELETE",
 
@@ -316,15 +326,17 @@ async function deleteAssessment(
             }
         );
 
-
         if (!response.ok) {
 
+            const responseText =
+                await response.text();
+
             throw new Error(
-                "Could not delete assessment."
+                responseText ||
+                `Could not delete assessment. Server returned ${response.status}.`
             );
 
         }
-
 
         await loadAssessments();
 
@@ -332,9 +344,14 @@ async function deleteAssessment(
 
     catch (error) {
 
-        assessmentMessage.textContent =
-            error.message;
+        console.error(
+            "Delete assessment error:",
+            error
+        );
 
+        assessmentMessage.textContent =
+            error.message ||
+            "Could not delete assessment.";
 
         assessmentMessage.style.color =
             "#dc2626";
@@ -354,19 +371,15 @@ document
 
             event.preventDefault();
 
-
             removeToken();
-
 
             localStorage.removeItem(
                 "hireshield_role"
             );
 
-
             localStorage.removeItem(
                 "hireshield_user"
             );
-
 
             window.location.href =
                 "../login.html";
