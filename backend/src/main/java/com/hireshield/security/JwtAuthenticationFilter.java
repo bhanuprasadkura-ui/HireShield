@@ -1,3 +1,4 @@
+```java
 package com.hireshield.security;
 
 import jakarta.servlet.FilterChain;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collections;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -20,6 +22,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     public JwtAuthenticationFilter(JwtService jwtService) {
         this.jwtService = jwtService;
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+
+        return path.equals("/api/auth/login")
+                || path.equals("/api/users/register")
+                || path.equals("/api/health")
+                || request.getMethod().equalsIgnoreCase("OPTIONS");
     }
 
     @Override
@@ -32,44 +44,42 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authorizationHeader =
                 request.getHeader("Authorization");
 
-        String token = null;
-        String email = null;
-
-        // Check whether Authorization header contains Bearer token
-        if (authorizationHeader != null &&
-                authorizationHeader.startsWith("Bearer ")) {
-
-            token = authorizationHeader.substring(7);
-
-            try {
-                email = jwtService.extractEmail(token);
-            } catch (Exception e) {
-                // Invalid token
-            }
+        if (authorizationHeader == null
+                || !authorizationHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
         }
 
-        // Authenticate user if token is valid
-        if (email != null &&
+        String token = authorizationHeader.substring(7);
+
+        try {
+            String email = jwtService.extractEmail(token);
+
+            if (email != null
+                    && SecurityContextHolder.getContext()
+                            .getAuthentication() == null
+                    && jwtService.isTokenValid(token)) {
+
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                email,
+                                null,
+                                Collections.emptyList()
+                        );
+
+                authentication.setDetails(
+                        new WebAuthenticationDetailsSource()
+                                .buildDetails(request)
+                );
+
                 SecurityContextHolder.getContext()
-                        .getAuthentication() == null &&
-                jwtService.isTokenValid(token)) {
-
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            email,
-                            null,
-                            java.util.Collections.emptyList()
-                    );
-
-            authentication.setDetails(
-                    new WebAuthenticationDetailsSource()
-                            .buildDetails(request)
-            );
-
-            SecurityContextHolder.getContext()
-                    .setAuthentication(authentication);
+                        .setAuthentication(authentication);
+            }
+        } catch (Exception e) {
+            // Ignore invalid tokens; Spring Security handles access.
         }
 
         filterChain.doFilter(request, response);
     }
 }
+```
