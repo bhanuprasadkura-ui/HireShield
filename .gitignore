@@ -1,3 +1,22 @@
+
+# Environment variables and secrets
 .env
-hireshield_backup.sql
+.env.*
+!.env.example
+
+# Java / Maven build output
 backend/target/
+
+# Database backups
+*.sql
+hireshield_backup.sql
+
+# IDE and operating system files
+.vscode/
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

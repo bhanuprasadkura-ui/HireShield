@@ -1,3 +1,4 @@
+
 package com.hireshield.security;
 
 import org.springframework.context.annotation.Bean;
@@ -22,7 +23,6 @@ public class SecurityConfig {
 
     public SecurityConfig(
             JwtAuthenticationFilter jwtAuthenticationFilter) {
-
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
@@ -31,58 +31,54 @@ public class SecurityConfig {
             HttpSecurity http) throws Exception {
 
         http
-
-            // Disable CSRF because this is a JWT-based REST API
             .csrf(csrf -> csrf.disable())
 
-            // Enable CORS
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .cors(cors ->
+                cors.configurationSource(corsConfigurationSource())
+            )
 
-            // JWT authentication should be stateless
             .sessionManagement(session ->
-                    session.sessionCreationPolicy(
-                            SessionCreationPolicy.STATELESS
-                    )
+                session.sessionCreationPolicy(
+                    SessionCreationPolicy.STATELESS
+                )
             )
 
             .authorizeHttpRequests(auth -> auth
 
-                // CORS preflight
                 .requestMatchers(
-                        HttpMethod.OPTIONS,
-                        "/**"
+                    HttpMethod.OPTIONS, "/**"
                 ).permitAll()
 
-                // Registration
+                // Public health endpoint
                 .requestMatchers(
-                        HttpMethod.POST,
-                        "/api/users/register"
+                    HttpMethod.GET, "/api/health"
                 ).permitAll()
 
-                // Login
+                // Public registration
                 .requestMatchers(
-                        HttpMethod.POST,
-                        "/api/auth/login"
+                    HttpMethod.POST, "/api/users/register"
+                ).permitAll()
+
+                // Public login
+                .requestMatchers(
+                    HttpMethod.POST, "/api/auth/login"
                 ).permitAll()
 
                 // Public skills list
                 .requestMatchers(
-                        HttpMethod.GET,
-                        "/api/skills"
+                    HttpMethod.GET, "/api/skills"
                 ).permitAll()
 
-                // Everything else requires JWT
+                // All remaining endpoints require authentication
                 .anyRequest().authenticated()
             )
 
-            // Disable browser login mechanisms
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
 
-            // JWT filter
             .addFilterBefore(
-                    jwtAuthenticationFilter,
-                    UsernamePasswordAuthenticationFilter.class
+                jwtAuthenticationFilter,
+                UsernamePasswordAuthenticationFilter.class
             );
 
         return http.build();
@@ -92,38 +88,31 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration =
-                new CorsConfiguration();
+            new CorsConfiguration();
 
         configuration.setAllowedOrigins(
-                List.of(
-                        "http://localhost:5500",
-                        "http://127.0.0.1:5500"
-                )
+            List.of(
+                "http://localhost:5500",
+                "http://127.0.0.1:5500",
+                "https://hireshield-frontend.vercel.app"
+            )
         );
 
         configuration.setAllowedMethods(
-                List.of(
-                        "GET",
-                        "POST",
-                        "PUT",
-                        "DELETE",
-                        "OPTIONS",
-                        "PATCH"
-                )
+            List.of(
+                "GET", "POST", "PUT", "DELETE",
+                "OPTIONS", "PATCH"
+            )
         );
 
-        configuration.setAllowedHeaders(
-                List.of("*")
-        );
-
+        configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
+            new UrlBasedCorsConfigurationSource();
 
         source.registerCorsConfiguration(
-                "/**",
-                configuration
+            "/**", configuration
         );
 
         return source;
@@ -131,7 +120,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-
         return new BCryptPasswordEncoder();
     }
 }
