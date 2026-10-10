@@ -1,4 +1,4 @@
-```java
+
 package com.hireshield.security;
 
 import jakarta.servlet.FilterChain;
@@ -82,4 +82,3 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
-```
