@@ -1,278 +1,209 @@
-```javascript
-(function () {
-    const authToken = getToken();
 
-    if (!authToken) {
+(function () {
+    "use strict";
+
+    const API_BASE_URL = "https://hireshield-m5dh.onrender.com/api";
+
+    const token = getToken();
+
+    if (!token) {
         window.location.href = "../login.html";
         return;
     }
 
-    // Deployed HireShield backend on Render
-    const API_BASE_URL = "https://hireshield-m5dh.onrender.com/api";
-
-    // HTML elements
     const jobForm = document.getElementById("jobForm");
     const jobList = document.getElementById("jobList");
     const jobCount = document.getElementById("jobCount");
     const jobMessage = document.getElementById("jobMessage");
     const logoutBtn = document.getElementById("logoutBtn");
 
-    // Load jobs belonging to the logged-in recruiter
-    async function loadMyJobs() {
-        if (!jobList) {
-            console.error("jobList element not found.");
+    function showMessage(message, isError) {
+        if (!jobMessage) {
+            alert(message);
             return;
         }
 
-        jobList.innerHTML = `
-            <p class="empty-education">Loading jobs...</p>
-        `;
+        jobMessage.textContent = message;
+        jobMessage.style.color = isError ? "#dc2626" : "#16a34a";
+    }
+
+    function createTextElement(tag, label, value) {
+        const element = document.createElement(tag);
+
+        if (label) {
+            const strong = document.createElement("strong");
+            strong.textContent = label + " ";
+            element.appendChild(strong);
+        }
+
+        element.appendChild(
+            document.createTextNode(
+                value == null || value === "" ? "Not specified" : String(value)
+            )
+        );
+
+        return element;
+    }
+
+    function displayJobs(jobs) {
+        if (!Array.isArray(jobs)) {
+            console.error("Expected an array of jobs:", jobs);
+            jobList.textContent = "Unexpected response from the server.";
+            return;
+        }
+
+        jobCount.textContent = jobs.length + " Jobs";
+        jobList.replaceChildren();
+
+        if (jobs.length === 0) {
+            const empty = document.createElement("p");
+            empty.className = "empty-education";
+            empty.textContent = "No jobs posted yet. Create your first job above.";
+            jobList.appendChild(empty);
+            return;
+        }
+
+        jobs.forEach(function (job) {
+            const card = document.createElement("div");
+            card.className = "education-item";
+
+            const content = document.createElement("div");
+            content.className = "education-item-content";
+
+            const heading = document.createElement("h3");
+            heading.textContent = job.title || "Untitled Job";
+            content.appendChild(heading);
+
+            content.appendChild(createTextElement("p", "Company:", job.company));
+            content.appendChild(createTextElement("p", "Location:", job.location));
+            content.appendChild(
+                createTextElement("p", "Employment Type:", job.employmentType)
+            );
+            content.appendChild(
+                createTextElement("p", "Required Skills:", job.requiredSkills)
+            );
+            content.appendChild(
+                createTextElement("p", "Preferred Skills:", job.preferredSkills)
+            );
+            content.appendChild(
+                createTextElement("p", "Eligibility:", job.eligibility)
+            );
+            content.appendChild(
+                createTextElement(
+                    "p",
+                    "Minimum Experience:",
+                    Number(job.minimumExperience || 0) + " years"
+                )
+            );
+            content.appendChild(
+                createTextElement("p", "Salary Range:", job.salaryRange)
+            );
+            content.appendChild(
+                createTextElement("p", "Description:", job.description)
+            );
+
+            const deleteButton = document.createElement("button");
+            deleteButton.type = "button";
+            deleteButton.className = "auth-btn delete-job-btn";
+            deleteButton.textContent = "Delete Job";
+
+            deleteButton.addEventListener("click", function () {
+                deleteJob(job.id);
+            });
+
+            content.appendChild(deleteButton);
+            card.appendChild(content);
+            jobList.appendChild(card);
+        });
+    }
+
+    async function loadMyJobs() {
+        jobList.textContent = "Loading jobs...";
 
         try {
             const response = await fetch(
-                `${API_BASE_URL}/jobs/my-jobs`,
+                API_BASE_URL + "/jobs/my-jobs",
                 {
                     method: "GET",
                     headers: {
-                        Authorization: `Bearer ${authToken}`,
-                        "Content-Type": "application/json"
+                        Authorization: "Bearer " + token
                     }
                 }
             );
 
-            if (response.status === 401 || response.status === 403) {
-                jobList.innerHTML = `
-                    <p class="empty-education">
-                        Your session has expired or you are not authorized.
-                        Please log in again.
-                    </p>
-                `;
-                return;
-            }
-
             if (!response.ok) {
                 const errorText = await response.text();
-                console.error(
-                    "Failed to load jobs:",
-                    response.status,
-                    errorText
-                );
+                console.error("Load jobs failed:", response.status, errorText);
 
-                jobList.innerHTML = `
-                    <p class="empty-education">
-                        Failed to load jobs. Server returned
-                        ${response.status}.
-                    </p>
-                `;
+                jobList.textContent =
+                    response.status === 401 || response.status === 403
+                        ? "Your session is invalid or you are not authorized. Please log in again."
+                        : "Could not load jobs. Server returned " + response.status + ".";
+
                 return;
             }
 
-            const jobs = await response.json();
-            displayJobs(jobs);
+            displayJobs(await response.json());
         } catch (error) {
             console.error("Error loading jobs:", error);
-
-            jobList.innerHTML = `
-                <p class="empty-education">
-                    Unable to connect to the server.
-                    Please try again.
-                </p>
-            `;
+            jobList.textContent = "Unable to connect to the server.";
         }
     }
 
-    // Display the recruiter's jobs
-    function displayJobs(jobs) {
-        if (!Array.isArray(jobs)) {
-            console.error("Expected jobs array but received:", jobs);
-
-            jobList.innerHTML = `
-                <p class="empty-education">
-                    Invalid job data received from server.
-                </p>
-            `;
-            return;
-        }
-
-        if (jobCount) {
-            jobCount.textContent = `${jobs.length} Jobs`;
-        }
-
-        if (jobs.length === 0) {
-            jobList.innerHTML = `
-                <div class="empty-education">
-                    <h3>No Jobs Posted Yet</h3>
-                    <p>Create your first job using the form above.</p>
-                </div>
-            `;
-            return;
-        }
-
-        jobList.innerHTML = "";
-
-        jobs.forEach(function (job) {
-            const jobCard = document.createElement("div");
-            jobCard.className = "education-item";
-
-            jobCard.innerHTML = `
-                <div class="education-item-content">
-                    <h3>${escapeHtml(job.title || "Untitled Job")}</h3>
-
-                    <p>
-                        <strong>Company:</strong>
-                        ${escapeHtml(job.company || "Not specified")}
-                    </p>
-
-                    <p>
-                        <strong>Location:</strong>
-                        ${escapeHtml(job.location || "Not specified")}
-                    </p>
-
-                    <p>
-                        <strong>Employment Type:</strong>
-                        ${escapeHtml(job.employmentType || "Not specified")}
-                    </p>
-
-                    <p>
-                        <strong>Required Skills:</strong>
-                        ${escapeHtml(job.requiredSkills || "Not specified")}
-                    </p>
-
-                    <p>
-                        <strong>Preferred Skills:</strong>
-                        ${escapeHtml(job.preferredSkills || "Not specified")}
-                    </p>
-
-                    <p>
-                        <strong>Eligibility:</strong>
-                        ${escapeHtml(job.eligibility || "Not specified")}
-                    </p>
-
-                    <p>
-                        <strong>Minimum Experience:</strong>
-                        ${Number(job.minimumExperience ?? 0)} years
-                    </p>
-
-                    <p>
-                        <strong>Salary Range:</strong>
-                        ${escapeHtml(job.salaryRange || "Not specified")}
-                    </p>
-
-                    <p><strong>Description:</strong></p>
-                    <p>
-                        ${escapeHtml(
-                            job.description || "No description provided."
-                        )}
-                    </p>
-
-                    <button
-                        type="button"
-                        class="auth-btn delete-job-btn"
-                        data-id="${escapeHtml(job.id)}"
-                        style="margin-top: 10px;"
-                    >
-                        Delete Job
-                    </button>
-                </div>
-            `;
-
-            jobList.appendChild(jobCard);
-        });
-
-        document.querySelectorAll(".delete-job-btn").forEach(
-            function (button) {
-                button.addEventListener("click", function () {
-                    deleteJob(this.dataset.id);
-                });
-            }
-        );
-    }
-
-    // Create a new job
     if (jobForm) {
         jobForm.addEventListener("submit", async function (event) {
             event.preventDefault();
 
-            const title = document.getElementById("title").value.trim();
-            const company = document.getElementById("company").value.trim();
-            const location = document.getElementById("location").value.trim();
-            const employmentType =
-                document.getElementById("employmentType").value;
-            const description =
-                document.getElementById("description").value.trim();
-            const requiredSkills =
-                document.getElementById("requiredSkills").value.trim();
-            const preferredSkills =
-                document.getElementById("preferredSkills").value.trim();
-            const eligibility =
-                document.getElementById("eligibility").value.trim();
-            const minimumExperience =
-                document.getElementById("minimumExperience").value || "0";
-            const salaryRange =
-                document.getElementById("salaryRange").value.trim();
+            const jobData = {
+                title: document.getElementById("title").value.trim(),
+                company: document.getElementById("company").value.trim(),
+                location: document.getElementById("location").value.trim(),
+                employmentType: document.getElementById("employmentType").value,
+                description: document.getElementById("description").value.trim(),
+                requiredSkills: document.getElementById("requiredSkills").value.trim(),
+                preferredSkills: document.getElementById("preferredSkills").value.trim(),
+                eligibility: document.getElementById("eligibility").value.trim(),
+                minimumExperience: Number(
+                    document.getElementById("minimumExperience").value || 0
+                ),
+                salaryRange: document.getElementById("salaryRange").value.trim()
+            };
 
             if (
-                !title ||
-                !company ||
-                !location ||
-                !description ||
-                !requiredSkills
+                !jobData.title ||
+                !jobData.company ||
+                !jobData.location ||
+                !jobData.description ||
+                !jobData.requiredSkills
             ) {
-                showMessage("Please fill all required fields.", true);
+                showMessage("Please fill in all required fields.", true);
                 return;
             }
-
-            const jobData = {
-                title,
-                company,
-                location,
-                employmentType,
-                description,
-                requiredSkills,
-                preferredSkills,
-                eligibility,
-                minimumExperience: Number(minimumExperience),
-                salaryRange
-            };
 
             const submitButton = jobForm.querySelector(
                 'button[type="submit"]'
             );
 
-            if (submitButton) {
-                submitButton.disabled = true;
-                submitButton.textContent = "Creating...";
-            }
+            submitButton.disabled = true;
+            submitButton.textContent = "Creating...";
 
             try {
-                const response = await fetch(`${API_BASE_URL}/jobs`, {
+                const response = await fetch(API_BASE_URL + "/jobs", {
                     method: "POST",
                     headers: {
-                        Authorization: `Bearer ${authToken}`,
+                        Authorization: "Bearer " + token,
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify(jobData)
                 });
 
-                if (response.status === 401 || response.status === 403) {
-                    showMessage(
-                        "Your session has expired or you are not authorized. Please log in again.",
-                        true
-                    );
-                    return;
-                }
-
                 if (!response.ok) {
                     const errorText = await response.text();
-
-                    console.error(
-                        "Create job failed:",
-                        response.status,
-                        errorText
-                    );
+                    console.error("Create job failed:", response.status, errorText);
 
                     showMessage(
-                        `Failed to create job. Server returned ${response.status}.`,
+                        "Failed to create job. Server returned " +
+                            response.status + ".",
                         true
                     );
                     return;
@@ -280,52 +211,42 @@
 
                 showMessage("Job created successfully!", false);
                 jobForm.reset();
-
                 await loadMyJobs();
             } catch (error) {
                 console.error("Error creating job:", error);
                 showMessage("Unable to connect to the server.", true);
             } finally {
-                if (submitButton) {
-                    submitButton.disabled = false;
-                    submitButton.textContent = "Create Job";
-                }
+                submitButton.disabled = false;
+                submitButton.textContent = "Create Job";
             }
         });
     }
 
-    // Delete a job
     async function deleteJob(jobId) {
+        if (jobId == null) {
+            alert("This job has no ID and cannot be deleted.");
+            return;
+        }
+
         if (!confirm("Are you sure you want to delete this job?")) {
             return;
         }
 
         try {
             const response = await fetch(
-                `${API_BASE_URL}/jobs/${encodeURIComponent(jobId)}`,
+                API_BASE_URL + "/jobs/" + encodeURIComponent(jobId),
                 {
                     method: "DELETE",
                     headers: {
-                        Authorization: `Bearer ${authToken}`
+                        Authorization: "Bearer " + token
                     }
                 }
             );
 
-            if (response.status === 401 || response.status === 403) {
-                alert("You are not authorized to delete this job.");
-                return;
-            }
-
             if (!response.ok) {
                 const errorText = await response.text();
-
-                console.error(
-                    "Delete job failed:",
-                    response.status,
-                    errorText
-                );
-
-                alert(`Failed to delete job. Server returned ${response.status}.`);
+                console.error("Delete job failed:", response.status, errorText);
+                alert("Failed to delete job. Server returned " + response.status + ".");
                 return;
             }
 
@@ -337,38 +258,15 @@
         }
     }
 
-    // Show success or error messages
-    function showMessage(message, isError) {
-        if (!jobMessage) {
-            alert(message);
-            return;
-        }
-
-        jobMessage.textContent = message;
-        jobMessage.style.color = isError ? "red" : "green";
-    }
-
-    // Escape HTML to avoid inserting untrusted text as markup
-    function escapeHtml(value) {
-        const div = document.createElement("div");
-        div.textContent = value == null ? "" : String(value);
-        return div.innerHTML;
-    }
-
-    // Logout
     if (logoutBtn) {
         logoutBtn.addEventListener("click", function (event) {
             event.preventDefault();
-
             removeToken();
             localStorage.removeItem("hireshield_role");
             localStorage.removeItem("hireshield_user");
-
             window.location.href = "../login.html";
         });
     }
 
-    // Initial load
     loadMyJobs();
 })();
-```
