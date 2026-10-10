@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:8080/api";
+const API_BASE_URL = "https://hireshield-m5dh.onrender.com/api";
 
 function saveToken(token) {
     localStorage.setItem("hireshield_token", token);
