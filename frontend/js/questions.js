@@ -1,26 +1,24 @@
+
 (function () {
+    "use strict";
 
     // =========================================================
-    // API
+    // API CONFIGURATION
     // =========================================================
 
     const QUESTIONS_API_URL =
-        "http://localhost:8080/api";
-
+        "https://hireshield-m5dh.onrender.com/api";
 
     // =========================================================
-    // AUTH
+    // AUTHENTICATION
     // =========================================================
 
     const authToken = getToken();
 
     if (!authToken) {
-
         window.location.href = "../login.html";
-
         return;
     }
-
 
     // =========================================================
     // HTML ELEMENTS
@@ -41,7 +39,6 @@
     const logoutBtn =
         document.getElementById("logoutBtn");
 
-
     // =========================================================
     // ASSESSMENT ID
     // =========================================================
@@ -52,186 +49,108 @@
     const assessmentId =
         params.get("assessmentId");
 
-
-    // =========================================================
-    // CHECK ASSESSMENT
-    // =========================================================
-
-    if (!assessmentId) {
-
+    if (!assessmentId || !/^\d+$/.test(assessmentId)) {
         if (questionList) {
-
-            questionList.innerHTML = `
-                <p class="empty-education">
-                    Assessment not found.
-                </p>
-            `;
+            questionList.textContent =
+                "Assessment not found. Please open an assessment from your assessments page.";
         }
-
-    } else {
-
-        loadAssessment();
-        loadQuestions();
-
+        return;
     }
 
+    // =========================================================
+    // LOAD ASSESSMENT AND QUESTIONS
+    // =========================================================
+
+    loadAssessment();
+    loadQuestions();
 
     // =========================================================
-    // LOAD ASSESSMENT
+    // LOAD ASSESSMENT DETAILS
     // =========================================================
 
     async function loadAssessment() {
-
         try {
-
-            const response =
-                await fetch(
-                    `${QUESTIONS_API_URL}/assessments/${assessmentId}`,
-                    {
-                        method: "GET",
-
-                        headers: {
-                            "Authorization":
-                                `Bearer ${authToken}`
-                        }
+            const response = await fetch(
+                QUESTIONS_API_URL +
+                    "/assessments/" +
+                    encodeURIComponent(assessmentId),
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization: "Bearer " + authToken
                     }
-                );
-
-
-            if (
-                response.status === 401 ||
-                response.status === 403
-            ) {
-
-                throw new Error(
-                    "You are not authorized to view this assessment."
-                );
-            }
-
+                }
+            );
 
             if (!response.ok) {
-
                 throw new Error(
-                    "Could not load assessment."
+                    response.status === 401 ||
+                    response.status === 403
+                        ? "You are not authorized to view this assessment. Please log in again."
+                        : "Could not load assessment. Server returned " +
+                              response.status +
+                              "."
                 );
             }
 
-
-            const assessment =
-                await response.json();
-
+            const assessment = await response.json();
 
             const assessmentTitle =
-                document.getElementById(
-                    "assessmentTitle"
-                );
-
+                document.getElementById("assessmentTitle");
 
             const assessmentDescription =
-                document.getElementById(
-                    "assessmentDescription"
-                );
-
+                document.getElementById("assessmentDescription");
 
             if (assessmentTitle) {
-
                 assessmentTitle.textContent =
                     assessment.title || "";
             }
 
-
             if (assessmentDescription) {
-
                 assessmentDescription.textContent =
                     assessment.description || "";
             }
-
-
         } catch (error) {
+            console.error("Error loading assessment:", error);
 
             const assessmentDescription =
-                document.getElementById(
-                    "assessmentDescription"
-                );
-
+                document.getElementById("assessmentDescription");
 
             if (assessmentDescription) {
-
                 assessmentDescription.textContent =
-                    error.message;
+                    error.message || "Could not load assessment.";
             }
-
-
-            console.error(
-                "Error loading assessment:",
-                error
-            );
         }
-
     }
-
 
     // =========================================================
     // LOAD QUESTIONS
     // =========================================================
 
     async function loadQuestions() {
-
         if (!questionList) {
-
-            console.error(
-                "questionList element not found."
-            );
-
+            console.error("questionList element not found.");
             return;
         }
 
-
-        questionList.innerHTML = `
-            <p class="empty-education">
-                Loading questions...
-            </p>
-        `;
-
+        questionList.textContent = "Loading questions...";
 
         try {
-
-            const response =
-                await fetch(
-                    `${QUESTIONS_API_URL}/assessments/${assessmentId}/questions`,
-                    {
-                        method: "GET",
-
-                        headers: {
-                            "Authorization":
-                                `Bearer ${authToken}`
-                        }
+            const response = await fetch(
+                QUESTIONS_API_URL +
+                    "/assessments/" +
+                    encodeURIComponent(assessmentId) +
+                    "/questions",
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization: "Bearer " + authToken
                     }
-                );
-
-
-            console.log(
-                "Questions response status:",
-                response.status
+                }
             );
 
-
-            if (
-                response.status === 401 ||
-                response.status === 403
-            ) {
-
-                throw new Error(
-                    "You are not authorized to view these questions."
-                );
-            }
-
-
             if (!response.ok) {
-
-                const errorText =
-                    await response.text();
-
+                const errorText = await response.text();
 
                 console.error(
                     "Load questions failed:",
@@ -239,312 +158,147 @@
                     errorText
                 );
 
-
                 throw new Error(
-                    `Could not load questions. Server returned ${response.status}.`
+                    response.status === 401 ||
+                    response.status === 403
+                        ? "You are not authorized to view these questions. Please log in again."
+                        : "Could not load questions. Server returned " +
+                              response.status +
+                              "."
                 );
             }
 
-
-            const questions =
-                await response.json();
-
-
-            console.log(
-                "Questions received:",
-                questions
-            );
-
+            const questions = await response.json();
 
             displayQuestions(questions);
-
-
         } catch (error) {
+            console.error("Error loading questions:", error);
 
-            console.error(
-                "Error loading questions:",
-                error
-            );
+            questionList.textContent =
+                error.message || "Could not load questions.";
 
-
-            questionList.innerHTML = `
-                <p class="empty-education">
-                    ${escapeHtml(error.message)}
-                </p>
-            `;
+            if (questionCount) {
+                questionCount.textContent = "0 Questions";
+            }
         }
-
     }
-
 
     // =========================================================
     // DISPLAY QUESTIONS
     // =========================================================
 
     function displayQuestions(questions) {
-
         if (!Array.isArray(questions)) {
-
-            console.error(
-                "Expected an array of questions:",
-                questions
-            );
-
-
-            questionList.innerHTML = `
-                <p class="empty-education">
-                    Invalid question data received.
-                </p>
-            `;
-
-
+            questionList.textContent =
+                "Invalid question data received.";
             return;
         }
 
-
-        questionList.innerHTML = "";
-
+        questionList.replaceChildren();
 
         if (questionCount) {
-
             questionCount.textContent =
-                `${questions.length} ${
-                    questions.length === 1
-                        ? "Question"
-                        : "Questions"
-                }`;
+                questions.length +
+                (questions.length === 1
+                    ? " Question"
+                    : " Questions");
         }
 
-
-        // =====================================================
-        // NO QUESTIONS
-        // =====================================================
-
         if (questions.length === 0) {
-
-            questionList.innerHTML = `
-                <p class="empty-education">
-                    No questions added yet.
-                </p>
-            `;
-
-
+            questionList.textContent =
+                "No questions added yet.";
             return;
         }
 
+        questions.forEach(function (question, index) {
+            const item = document.createElement("div");
+            item.className = "education-item";
 
-        // =====================================================
-        // DISPLAY QUESTIONS
-        // =====================================================
+            const header = document.createElement("div");
+            header.className = "education-item-header";
 
-        questions.forEach(
-            function (question, index) {
+            const heading = document.createElement("h3");
+            heading.textContent =
+                (index + 1) + ". " +
+                (question.questionText || "");
 
-                const item =
-                    document.createElement("div");
+            const deleteButton =
+                document.createElement("button");
 
+            deleteButton.type = "button";
+            deleteButton.className = "delete-question-btn";
+            deleteButton.textContent = "Delete";
 
-                item.className =
-                    "education-item";
+            deleteButton.addEventListener("click", function () {
+                deleteQuestion(question.id);
+            });
 
+            header.appendChild(heading);
+            header.appendChild(deleteButton);
+            item.appendChild(header);
 
-                item.innerHTML = `
+            ["A", "B", "C", "D"].forEach(function (letter) {
+                const paragraph = document.createElement("p");
+                const optionValue =
+                    question["option" + letter] || "";
 
-                    <div class="education-item-header">
+                paragraph.textContent =
+                    letter + ". " + optionValue;
 
-                        <h3>
-                            ${index + 1}.
-                            ${escapeHtml(
-                                question.questionText
-                            )}
-                        </h3>
+                item.appendChild(paragraph);
+            });
 
+            const answer = document.createElement("p");
+            const answerLabel = document.createElement("strong");
 
-                        <button
-                            type="button"
-                            class="delete-question-btn"
-                            data-question-id="${question.id}">
-                            Delete
-                        </button>
-
-                    </div>
-
-
-                    <p>
-                        A.
-                        ${escapeHtml(
-                            question.optionA
-                        )}
-                    </p>
-
-
-                    <p>
-                        B.
-                        ${escapeHtml(
-                            question.optionB
-                        )}
-                    </p>
-
-
-                    <p>
-                        C.
-                        ${escapeHtml(
-                            question.optionC
-                        )}
-                    </p>
-
-
-                    <p>
-                        D.
-                        ${escapeHtml(
-                            question.optionD
-                        )}
-                    </p>
-
-
-                    <p>
-
-                        <strong>
-                            Correct Answer:
-                        </strong>
-
-                        ${escapeHtml(
-                            question.correctAnswer
-                        )}
-
-                    </p>
-
-                `;
-
-
-                questionList.appendChild(item);
-
-            }
-        );
-
-
-        // =====================================================
-        // DELETE BUTTONS
-        // =====================================================
-
-        const deleteButtons =
-            questionList.querySelectorAll(
-                ".delete-question-btn"
+            answerLabel.textContent = "Correct Answer: ";
+            answer.appendChild(answerLabel);
+            answer.appendChild(
+                document.createTextNode(
+                    question.correctAnswer || ""
+                )
             );
 
-
-        deleteButtons.forEach(
-            function (button) {
-
-                button.addEventListener(
-                    "click",
-                    function () {
-
-                        const questionId =
-                            this.dataset.questionId;
-
-
-                        deleteQuestion(questionId);
-
-                    }
-                );
-
-            }
-        );
-
+            item.appendChild(answer);
+            questionList.appendChild(item);
+        });
     }
-
 
     // =========================================================
     // ADD QUESTION
     // =========================================================
 
     if (questionForm) {
-
         questionForm.addEventListener(
             "submit",
             async function (event) {
-
                 event.preventDefault();
 
-
-                if (!assessmentId) {
-
-                    showMessage(
-                        "Assessment not found.",
-                        true
-                    );
-
-                    return;
-                }
-
-
-                showMessage(
-                    "Adding question...",
-                    false
-                );
-
-
                 const questionData = {
-
                     questionText:
-                        document
-                            .getElementById(
-                                "questionText"
-                            )
-                            ?.value
-                            .trim() || "",
-
+                        document.getElementById("questionText")
+                            ?.value.trim() || "",
 
                     optionA:
-                        document
-                            .getElementById(
-                                "optionA"
-                            )
-                            ?.value
-                            .trim() || "",
-
+                        document.getElementById("optionA")
+                            ?.value.trim() || "",
 
                     optionB:
-                        document
-                            .getElementById(
-                                "optionB"
-                            )
-                            ?.value
-                            .trim() || "",
-
+                        document.getElementById("optionB")
+                            ?.value.trim() || "",
 
                     optionC:
-                        document
-                            .getElementById(
-                                "optionC"
-                            )
-                            ?.value
-                            .trim() || "",
-
+                        document.getElementById("optionC")
+                            ?.value.trim() || "",
 
                     optionD:
-                        document
-                            .getElementById(
-                                "optionD"
-                            )
-                            ?.value
-                            .trim() || "",
-
+                        document.getElementById("optionD")
+                            ?.value.trim() || "",
 
                     correctAnswer:
-                        document
-                            .getElementById(
-                                "correctAnswer"
-                            )
+                        document.getElementById("correctAnswer")
                             ?.value || ""
-
                 };
-
-
-                // =================================================
-                // VALIDATION
-                // =================================================
 
                 if (
                     !questionData.questionText ||
@@ -554,306 +308,167 @@
                     !questionData.optionD ||
                     !questionData.correctAnswer
                 ) {
-
                     showMessage(
                         "Please fill all question fields and select the correct answer.",
                         true
                     );
-
-
                     return;
                 }
 
+                showMessage("Adding question...", false);
 
-                console.log(
-                    "Adding question:",
-                    questionData
-                );
-
-
-                try {
-
-                    const response =
-                        await fetch(
-                            `${QUESTIONS_API_URL}/assessments/${assessmentId}/questions`,
-                            {
-                                method: "POST",
-
-                                headers: {
-
-                                    "Content-Type":
-                                        "application/json",
-
-                                    "Authorization":
-                                        `Bearer ${authToken}`
-
-                                },
-
-                                body:
-                                    JSON.stringify(
-                                        questionData
-                                    )
-                            }
-                        );
-
-
-                    console.log(
-                        "Add question status:",
-                        response.status
+                const submitButton =
+                    questionForm.querySelector(
+                        'button[type="submit"]'
                     );
 
+                if (submitButton) {
+                    submitButton.disabled = true;
+                }
 
-                    // =================================================
-                    // READ RESPONSE SAFELY
-                    // =================================================
+                try {
+                    const response = await fetch(
+                        QUESTIONS_API_URL +
+                            "/assessments/" +
+                            encodeURIComponent(assessmentId) +
+                            "/questions",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                Authorization:
+                                    "Bearer " + authToken
+                            },
+                            body: JSON.stringify(questionData)
+                        }
+                    );
 
                     const responseText =
                         await response.text();
 
-
                     let data = {};
 
-
                     if (responseText) {
-
                         try {
-
-                            data =
-                                JSON.parse(
-                                    responseText
-                                );
-
+                            data = JSON.parse(responseText);
                         } catch (parseError) {
-
-                            console.warn(
-                                "Response was not JSON:",
-                                responseText
-                            );
+                            data = {};
                         }
-
                     }
 
-
-                    // =================================================
-                    // ERROR
-                    // =================================================
-
                     if (!response.ok) {
-
                         throw new Error(
                             data.message ||
                             responseText ||
-                            `Could not add question. Server returned ${response.status}.`
+                            "Could not add question. Server returned " +
+                                response.status +
+                                "."
                         );
-
                     }
-
-
-                    // =================================================
-                    // SUCCESS
-                    // =================================================
 
                     showMessage(
                         "Question added successfully!",
                         false
                     );
 
-
                     questionForm.reset();
 
-
-                    // Reload question list
-
                     await loadQuestions();
-
                 } catch (error) {
-
-                    console.error(
-                        "Error adding question:",
-                        error
-                    );
-
+                    console.error("Error adding question:", error);
 
                     showMessage(
-                        error.message,
+                        error.message || "Could not add question.",
                         true
                     );
+                } finally {
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                    }
                 }
-
             }
         );
-
     }
-
 
     // =========================================================
     // DELETE QUESTION
     // =========================================================
 
     async function deleteQuestion(questionId) {
-
-        if (
-            !confirm(
-                "Delete this question?"
-            )
-        ) {
-
+        if (!confirm("Delete this question?")) {
             return;
         }
 
-
         try {
-
-            const response =
-                await fetch(
-                    `${QUESTIONS_API_URL}/assessments/${assessmentId}/questions/${questionId}`,
-                    {
-                        method: "DELETE",
-
-                        headers: {
-                            "Authorization":
-                                `Bearer ${authToken}`
-                        }
+            const response = await fetch(
+                QUESTIONS_API_URL +
+                    "/assessments/" +
+                    encodeURIComponent(assessmentId) +
+                    "/questions/" +
+                    encodeURIComponent(questionId),
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: "Bearer " + authToken
                     }
-                );
-
-
-            if (
-                response.status === 401 ||
-                response.status === 403
-            ) {
-
-                throw new Error(
-                    "You are not authorized to delete this question."
-                );
-            }
-
+                }
+            );
 
             if (!response.ok) {
-
-                const errorText =
-                    await response.text();
-
-
-                console.error(
-                    "Delete question failed:",
-                    response.status,
-                    errorText
-                );
-
+                const errorText = await response.text();
 
                 throw new Error(
-                    `Could not delete question. Server returned ${response.status}.`
+                    errorText ||
+                    "Could not delete question. Server returned " +
+                        response.status +
+                        "."
                 );
             }
-
 
             showMessage(
                 "Question deleted successfully.",
                 false
             );
 
-
             await loadQuestions();
-
-
         } catch (error) {
-
-            console.error(
-                "Error deleting question:",
-                error
-            );
-
+            console.error("Error deleting question:", error);
 
             showMessage(
-                error.message,
+                error.message || "Could not delete question.",
                 true
             );
         }
-
     }
 
-
     // =========================================================
-    // MESSAGE
+    // DISPLAY MESSAGES
     // =========================================================
 
-    function showMessage(
-        message,
-        isError
-    ) {
-
+    function showMessage(message, isError) {
         if (!questionMessage) {
-
             return;
         }
 
-
-        questionMessage.textContent =
-            message;
-
-
+        questionMessage.textContent = message;
         questionMessage.style.color =
-            isError
-                ? "#dc2626"
-                : "#16a34a";
-
+            isError ? "#dc2626" : "#16a34a";
     }
-
-
-    // =========================================================
-    // HTML ESCAPE
-    // =========================================================
-
-    function escapeHtml(value) {
-
-        const div =
-            document.createElement("div");
-
-
-        div.textContent =
-            value == null
-                ? ""
-                : String(value);
-
-
-        return div.innerHTML;
-
-    }
-
 
     // =========================================================
     // LOGOUT
     // =========================================================
 
     if (logoutBtn) {
+        logoutBtn.addEventListener("click", function (event) {
+            event.preventDefault();
 
-        logoutBtn.addEventListener(
-            "click",
-            function (event) {
+            removeToken();
 
-                event.preventDefault();
+            localStorage.removeItem("hireshield_role");
+            localStorage.removeItem("hireshield_user");
 
-
-                removeToken();
-
-
-                localStorage.removeItem(
-                    "hireshield_role"
-                );
-
-
-                localStorage.removeItem(
-                    "hireshield_user"
-                );
-
-
-                window.location.href =
-                    "../login.html";
-
-            }
-        );
-
+            window.location.href = "../login.html";
+        });
     }
-
 })();
