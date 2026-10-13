@@ -12,7 +12,6 @@ const skillMessage = document.getElementById("skillMessage");
 
 let availableSkills = [];
 let candidateSkills = [];
-let token = null;
 
 function showMessage(message, isError = false) {
     skillMessage.textContent = message;
