@@ -1,3 +1,4 @@
+
 package com.hireshield.controller;
 
 import com.hireshield.dto.CandidateSkillResponse;
@@ -13,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/candidate/skills")
@@ -22,6 +24,9 @@ public class CandidateSkillController {
     private final CandidateSkillService candidateSkillService;
     private final UserRepository userRepository;
     private final SkillRepository skillRepository;
+
+    private static final Set<String> VALID_PROFICIENCIES =
+            Set.of("Beginner", "Intermediate", "Advanced", "Expert");
 
     public CandidateSkillController(
             CandidateSkillService candidateSkillService,
@@ -39,29 +44,76 @@ public class CandidateSkillController {
             @RequestParam String proficiency,
             Authentication authentication) {
 
-        String email = authentication.getName();
-
-        User candidate = userRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new RuntimeException("User not found"));
-
-        Skill skill = skillRepository.findById(skillId)
-                .orElseThrow(() ->
-                        new RuntimeException("Skill not found"));
-
-        if (candidateSkillService.skillAlreadyAdded(
-                candidate.getId(),
-                skillId)) {
-
+        if (!isValidProficiency(proficiency)) {
             return ResponseEntity.badRequest().build();
         }
 
-        CandidateSkill candidateSkill =
-                new CandidateSkill(
-                        candidate,
-                        skill,
-                        proficiency
-                );
+        User candidate = getAuthenticatedCandidate(authentication);
+
+        if (candidate == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        Skill skill = skillRepository.findById(skillId)
+                .orElse(null);
+
+        if (skill == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (candidateSkillService.skillAlreadyAdded(
+                candidate.getId(), skill.getId())) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        CandidateSkill candidateSkill = new CandidateSkill(
+                candidate,
+                skill,
+                proficiency
+        );
+
+        CandidateSkill savedSkill =
+                candidateSkillService.addSkill(candidateSkill);
+
+        return ResponseEntity.ok(toResponse(savedSkill));
+    }
+
+    @PostMapping("/custom")
+    public ResponseEntity<CandidateSkillResponse> addCustomSkill(
+            @RequestParam String skillName,
+            @RequestParam String proficiency,
+            Authentication authentication) {
+
+        if (skillName == null || skillName.isBlank()
+                || skillName.trim().length() > 100
+                || !isValidProficiency(proficiency)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        User candidate = getAuthenticatedCandidate(authentication);
+
+        if (candidate == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        String normalizedName = skillName.trim();
+
+        Skill skill = skillRepository
+                .findByNameIgnoreCase(normalizedName)
+                .orElseGet(() -> skillRepository.save(
+                        new Skill(normalizedName, "Custom")
+                ));
+
+        if (candidateSkillService.skillAlreadyAdded(
+                candidate.getId(), skill.getId())) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        CandidateSkill candidateSkill = new CandidateSkill(
+                candidate,
+                skill,
+                proficiency
+        );
 
         CandidateSkill savedSkill =
                 candidateSkillService.addSkill(candidateSkill);
@@ -73,11 +125,11 @@ public class CandidateSkillController {
     public ResponseEntity<List<CandidateSkillResponse>> getMySkills(
             Authentication authentication) {
 
-        String email = authentication.getName();
+        User candidate = getAuthenticatedCandidate(authentication);
 
-        User candidate = userRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new RuntimeException("User not found"));
+        if (candidate == null) {
+            return ResponseEntity.status(401).build();
+        }
 
         List<CandidateSkillResponse> response =
                 candidateSkillService
@@ -87,6 +139,23 @@ public class CandidateSkillController {
                         .toList();
 
         return ResponseEntity.ok(response);
+    }
+
+    private User getAuthenticatedCandidate(
+            Authentication authentication) {
+
+        if (authentication == null
+                || !authentication.isAuthenticated()) {
+            return null;
+        }
+
+        return userRepository.findByEmail(authentication.getName())
+                .orElse(null);
+    }
+
+    private boolean isValidProficiency(String proficiency) {
+        return proficiency != null
+                && VALID_PROFICIENCIES.contains(proficiency);
     }
 
     private CandidateSkillResponse toResponse(
